@@ -1,4 +1,4 @@
-package com.xdl.dao;
+package com.xdl.bean;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

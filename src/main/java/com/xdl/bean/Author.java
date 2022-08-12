@@ -1,4 +1,4 @@
-package com.xdl.dao;
+package com.xdl.bean;
 
 
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class Author {
+public class Author implements Comparable<Author> {
     private Long id;
     private String name;
     private Integer age;
@@ -22,7 +22,7 @@ public class Author {
     private String intro;
     private List<Book> books;
 
-    private static List<Author> getAuthors() {
+    public static List<Author> getAuthors() {
         //数据初始化
         Author author = new Author(1L, "蒙多", 33, "一个从菜刀中明悟哲理的祖安人", null);
         Author author2 = new Author(2L, "亚拉索", 15, "狂风也追逐不上他的思考速度", null);
@@ -52,5 +52,10 @@ public class Author {
 
         List<Author> authorList = new ArrayList<>(Arrays.asList(author, author2, author3, author4));
         return authorList;
+    }
+
+    @Override
+    public int compareTo(Author o) {
+        return this.age - o.age;
     }
 }
