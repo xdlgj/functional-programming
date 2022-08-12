@@ -6,6 +6,8 @@ import org.junit.Test;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class AuthTest {
@@ -66,7 +68,7 @@ public class AuthTest {
                 .map(author -> author.getName())
                 .forEach(name -> System.out.println(name));
         authors.stream()
-                .map(author -> author.getAge()+10)
+                .map(author -> author.getAge() + 10)
                 .forEach(age -> System.out.println(age));
         // distinct 去除流中重复的元素, 依赖与Object的equals方法来判断是否是相同的对象
         System.out.println("--------------distinct---------------");
@@ -112,5 +114,43 @@ public class AuthTest {
                 .flatMap(book -> Arrays.stream(book.getCategory().split(",")))
                 .distinct()
                 .forEach(category -> System.out.println(category));
+    }
+
+    /**
+     * 终结操作，只有执行了终结操作才会启动对流的操作
+     */
+    @Test
+    public void test04() {
+        // forEach 对流中的元素进行遍历操作，我们通过传入的参数去指定对遍历到的元素进行什么具体操作
+        List<Author> authors = Author.getAuthors();
+        authors.stream()
+                .map(author -> author.getName())
+                .distinct()
+                .forEach(name -> System.out.println(name));
+        // count 用来获取当前流中元素的个数
+        System.out.println("-----------count-----------");
+        long count = authors.stream()
+                .flatMap(author -> author.getBooks().stream())
+                .distinct()
+                .count();
+        System.out.println(count);
+        // max&min可以用来获取流中的最大值和最小值
+        System.out.println("-----------max&min-----------");
+        Optional<Integer> max = authors.stream()
+                .flatMap(author -> author.getBooks().stream())
+                .map(book -> book.getScore())
+                .max((o1, o2) -> o1 - o2);
+        System.out.println("max:" + max.get());
+        Optional<Integer> min = authors.stream()
+                .flatMap(author -> author.getBooks().stream())
+                .map(book -> book.getScore())
+                .min((o1, o2) -> o1 - o2);
+        System.out.println("min:" + min.get());
+        // collect 把当前流转换成一个集合
+        System.out.println("-----------collect-----------");
+        List<String> collect = authors.stream()
+                .map(author -> author.getName())
+                .collect(Collectors.toList());
+        System.out.println(collect);
     }
 }
