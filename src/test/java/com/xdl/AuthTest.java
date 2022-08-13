@@ -153,4 +153,57 @@ public class AuthTest {
                 .collect(Collectors.toList());
         System.out.println(collect);
     }
+
+    /**
+     * 终结操作，查找与匹配
+     */
+    @Test
+    public void test05() {
+        List<Author> authors = Author.getAuthors();
+        // anMatch可以用来判断是否有任意符合匹配条件的元素，结果为boolean类型
+        // 判断是否有年龄超过29的作家
+        boolean flag = authors.stream()
+                .anyMatch(author -> author.getAge() > 29);
+        System.out.println(flag);
+        // allMatch用来判断是否所有元素都满足条件
+        boolean flag2 = authors.stream()
+                .allMatch(author -> author.getAge() > 29);
+        System.out.println(flag2);
+        // noneMatch用来判断是都所有元素都不满足条件
+        boolean flag3 = authors.stream()
+                .noneMatch(author -> author.getAge() > 100);
+        System.out.println(flag3);
+        // findAny获取流中任意元素，该方法没办法保证获取的一定是流中的第一个元素
+        // 获取任意一个年龄大于18的作家，如果存在就输出名字
+        Optional<Author> optional = authors.stream()
+                .filter(author -> author.getAge() > 18)
+                .findAny();
+        System.out.println(optional.get().getName());
+        // findFirst获取流中第一个元素
+        Optional<Author> first = authors.stream()
+                .sorted((o1, o2) -> o1.getAge() - o2.getAge())
+                .findFirst();
+        first.ifPresent(author -> System.out.println(author.getName()));
+        // reduce 对流中的数据按照指定的计算方式计算出结果。（缩减操作）
+        //  reduce的作用是把stream中的元素给组合起来，
+        //  我们可以传入一个初始值，它会按照我们的计算方式依次拿流中的元素和初始化值进行计算，计算结果再和后面的元素计算。
+        Integer total = authors.stream()
+                .distinct()
+                .map(author -> author.getAge())
+                .reduce(0, (result, ele) -> result + ele);
+        System.out.println(total);
+        // map一个参数的重载形式
+        Optional<Integer> total2 = authors.stream()
+                .distinct()
+                .map(author -> author.getAge())
+                .reduce((result, ele) -> result + ele);
+        System.out.println(total2.get());
+        // 使用reduce找出流中的最值
+        // 找出年纪最大的作者
+        Integer result = authors.stream()
+                .map(author -> author.getAge())
+                .reduce(Integer.MIN_VALUE, (res, ele) -> res > ele ? res : ele);
+        System.out.println(result);
+
+    }
 }
